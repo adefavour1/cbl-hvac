@@ -25,7 +25,7 @@ def check_auth() -> bool:
     st.markdown("<br><br>", unsafe_allow_html=True)
     col1, col2, col3 = st.columns([1, 1.2, 1])
     with col2:
-        st.title("🔒 COLEXA Portal")
+        st.title("🔒 COLEXA Hvac Portal")
         st.caption("HVAC Monitoring & Biosensor Platform")
         
         with st.form("login_form"):
