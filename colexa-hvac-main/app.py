@@ -3,7 +3,7 @@ from auth import check_auth, render_logout_sidebar
 from database.schema import initialize_database
 from utils.ui_components import inject_global_css
 
-# 1. Page Configuration
+# 1. Page Configuration (Must be first)
 st.set_page_config(
     page_title="COLEXA BIOSENSOR | HVAC Monitoring",
     page_icon="❄️",
@@ -11,13 +11,13 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
-# Hide unnecessary toolbar icons
+# Hide default Streamlit elements cleanly
 hide_streamlit_style = """
 <style>
 #MainMenu {visibility: hidden !important;}
 [data-testid="stToolbar"] {visibility: hidden !important;}
 [data-testid="stDecoration"] {visibility: hidden !important;}
-[data-testid="stStatusWidget"] {visibility: hidden !important;}
+[data-testid="stStatusWidget"] {visibility: hidden !important;
 footer {visibility: hidden !important;}
 header[data-testid="stHeader"] { background: transparent !important; visibility: visible !important; }
 header[data-testid="stHeader"] > div:first-child { display: none !important; }
@@ -30,24 +30,23 @@ st.markdown(hide_streamlit_style, unsafe_allow_html=True)
 if not check_auth():
     st.stop()
 
-# Startup: ensure database schema exists
+# 3. Database initialization (cached or run once safely)
 if "db_ready" not in st.session_state:
     st.session_state["db_ready"] = initialize_database()
 
 inject_global_css()
 
-# 3. Multi-page Navigation Setup (Cleaned of self-references)
+# 4. Define your navigation pages strictly from the pages/ folder
 pg = st.navigation([
     st.Page("pages/0_Executive_Dashboard.py", title="Executive Dashboard", icon="📊"),
     st.Page("pages/1_AHU_Monitoring.py", title="AHU Monitoring", icon="❄️"),
     st.Page("pages/2_Air_Compressor.py", title="Air Compressor", icon="🌀"),
     st.Page("pages/3_DHU_Monitoring.py", title="DHU Monitoring", icon="💧"),
-    st.Page("pages/4_Executive_Dashboard.py", title="Executive Overview", icon="📈"),
     st.Page("pages/5_RCA_and_CAPA.py", title="RCA & CAPA Engine", icon="🔍"),
     st.Page("pages/6_Compliance_Reports.py", title="Compliance Reports", icon="📋"),
     st.Page("pages/7_SOP_Library.py", title="SOP Library", icon="📚"),
 ])
 
-# Render logout sidebar and run router
+# 5. Render custom sidebar elements (like logout) and run the router
 render_logout_sidebar()
 pg.run()
