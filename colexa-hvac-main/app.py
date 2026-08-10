@@ -67,6 +67,12 @@ pg = st.navigation([
     st.Page("pages/7_SOP_Library.py", title="SOP Library", icon="📚"),
 ])
 
+# Render the logout sidebar cleanly
+render_logout_sidebar()
+
+# Execute the navigation router first so pages load properly without duplicate execution loops
+pg.run()
+
 # ---------------------------------------------------------------------------
 # Top Header: Dynamic Real-Time Ticking Clock (JS-driven)
 # ---------------------------------------------------------------------------
@@ -251,13 +257,4 @@ recent_logs = fetch_facility_logs(limit=15)
 if recent_logs.empty:
     st.info("No telemetry logs available.")
 else:
-    st.dataframe(recent_logs, width='stretch', hide_index=True)
-
-# ---------------------------------------------------------------------------
-# Navigation & Sidebar Routing (Only render logout sidebar when pg.run() is executing the router context to avoid root duplication)
-# ---------------------------------------------------------------------------
-if "_streamlit_navigation_running" not in st.session_state:
-    st.session_state["_streamlit_navigation_running"] = True
-    render_logout_sidebar()
-
-pg.run()
+    st.dataframe(recent_logs, use_container_width=True, hide_index=True)
